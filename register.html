@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thoughtflow — Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#1a1209;--cream:#faf6ef;--warm:#f0e8d8;--gold:#c9933a;--rust:#b85c38;--muted:#8a7968;--border:#d4c9b8}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;display:flex}
+    .panel-left{width:40%;background:var(--rust);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden}
+    .panel-left::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 68%)}
+    .panel-left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(0,0,0,.15) 0%,transparent 68%)}
+    .brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+    .brand-icon{width:40px;height:40px;background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .brand-name{font-family:'Playfair Display',serif;color:#fff;font-size:1.4rem}
+    .panel-copy{position:relative;z-index:1}
+    .panel-copy h2{font-family:'Playfair Display',serif;color:#fff;font-size:2.4rem;line-height:1.22;margin-bottom:1.1rem}
+    .panel-copy p{color:rgba(255,255,255,.6);line-height:1.7;font-size:.9rem;max-width:300px;margin-bottom:1.5rem}
+    .feat{list-style:none}
+    .feat li{color:rgba(255,255,255,.72);font-size:.86rem;padding:.42rem 0;display:flex;align-items:center;gap:.65rem;border-bottom:1px solid rgba(255,255,255,.09)}
+    .feat li:last-child{border:none}
+    .feat li::before{content:'✦';color:rgba(255,255,255,.4);font-size:.65rem;flex-shrink:0}
+    .panel-footer{color:rgba(255,255,255,.28);font-size:.76rem}
+    .panel-right{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;overflow-y:auto}
+    .box{width:100%;max-width:440px;animation:up .5s ease;padding:0.5rem 0}
+    @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .box h1{font-family:'Playfair Display',serif;color:var(--ink);font-size:1.95rem;font-weight:700;margin-bottom:.35rem}
+    .box .sub{color:var(--muted);font-size:.88rem;margin-bottom:1.8rem;font-weight:500}
+    .alert{padding:.72rem 1rem;border-radius:8px;font-size:.86rem;margin-bottom:1rem;display:none}
+    .alert.err{background:#fdeaea;color:#c0392b;border:1px solid #f5c6cb;display:block}
+    .alert.ok{background:#eafaf1;color:#27ae60;border:1px solid #b7e4c7;display:block}
+    .fg{margin-bottom:1.2rem}
+    .fg label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin-bottom:.4rem}
+    .opt{font-size:.72rem;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+    .iw{position:relative}
+    .iw i{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem;pointer-events:none}
+    .fg input,.fg textarea,.fg select{width:100%;padding:.8rem 1rem .8rem 2.7rem;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);outline:none;transition:all .2s}
+    .fg textarea{padding:.8rem 1rem;resize:vertical;min-height:72px}
+    .fg select{padding:.8rem 1rem;cursor:pointer}
+    .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--rust);box-shadow:0 0 0 3px rgba(184,92,56,.1)}
+    .pw-strength{display:flex;gap:4px;margin-top:.45rem}
+    .pw-bar{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+    .pw-bar.weak{background:#e74c3c}.pw-bar.med{background:var(--gold)}.pw-bar.str{background:#27ae60}
+    .pw-label{font-size:.73rem;color:var(--muted);margin-top:.25rem}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .terms{display:flex;align-items:flex-start;gap:.55rem;font-size:.83rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.45}
+    .terms input{accent-color:var(--rust);margin-top:2px;flex-shrink:0}
+    .terms a{color:var(--rust);text-decoration:none}
+    .terms a:hover{text-decoration:underline}
+    .btn{width:100%;padding:.9rem;background:var(--rust);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.97rem;font-weight:500;cursor:pointer;transition:background .22s}
+    .btn:hover{background:var(--ink)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .li{text-align:center;font-size:.88rem;color:var(--muted);margin-top:1.3rem}
+    .li a{color:var(--rust);text-decoration:none;font-weight:500}
+    .li a:hover{text-decoration:underline}
+    .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    @media(max-width:760px){body{flex-direction:column;overflow:auto}.panel-left{width:100%;padding:2rem 1.5rem;min-height:auto}.panel-copy h2{font-size:1.8rem}.feat{display:none}.panel-right{padding:2rem 1.5rem}.row2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="panel-left">
+  <a href="index.html" class="brand"><div class="brand-icon">✦</div><span class="brand-name">Thoughtflow</span></a>
+  <div class="panel-copy">
+    <h2>Start your writing journey today.</h2>
+    <p>Join our community of thinkers, writers, and idea-sharers. Your voice deserves to be heard.</p>
+    <ul class="feat">
+      <li>Post thoughts, stories, and ideas</li>
+      <li>Organise with hashtags &amp; categories</li>
+      <li>Like, comment &amp; bookmark posts</li>
+      <li>Follow real registered users</li>
+      <li>Build your personal profile</li>
+    </ul>
+  </div>
+  <p class="panel-footer">Free forever. No credit card required.</p>
+</div>
+<div class="panel-right">
+  <div class="box">
+    <h1>Create account</h1>
+    <p class="sub">Fill in your details to get started</p>
+    <div class="alert" id="alert"></div>
+    <div class="row2">
+      <div class="fg"><label>Full Name</label><div class="iw"><i>👤</i><input type="text" id="name" placeholder="Jane Doe"></div></div>
+      <div class="fg"><label>Username</label><div class="iw"><i style="font-style:normal;font-size:.8rem">@</i><input type="text" id="username" placeholder="janedoe"></div></div>
+    </div>
+    <div class="fg"><label>Email Address</label><div class="iw"><i>✉</i><input type="email" id="email" placeholder="you@example.com"></div></div>
+    <div class="fg">
+      <label>Password</label>
+      <div class="iw"><i>🔒</i><input type="password" id="password" placeholder="Min. 6 characters" oninput="checkPw(this.value)"></div>
+      <div class="pw-strength"><div class="pw-bar" id="b1"></div><div class="pw-bar" id="b2"></div><div class="pw-bar" id="b3"></div></div>
+      <div class="pw-label" id="pwlabel"></div>
+    </div>
+    <div class="fg"><label>Bio <span class="opt">(optional)</span></label><textarea id="bio" placeholder="A short line about yourself…" style="padding:.8rem 1rem"></textarea></div>
+    <div class="fg"><label>Location <span class="opt">(optional)</span></label><div class="iw"><i>📍</i><input type="text" id="location" placeholder="City, Country"></div></div>
+    <label class="terms"><input type="checkbox" id="terms"> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+    <button class="btn" id="btn" onclick="register()"><span id="bt">Create Account</span></button>
+    <div class="li">Already have an account? <a href="index.html">Sign in →</a></div>
+  </div>
+</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const cfg={apiKey:"AIzaSyCcgJ95GBqTe0mDRu09b5vvigmBlq7l8us",authDomain:"loginauthproject-34e2a.firebaseapp.com",projectId:"loginauthproject-34e2a",storageBucket:"loginauthproject-34e2a.firebasestorage.app",messagingSenderId:"538191570556",appId:"1:538191570556:web:5a3e3f2f4cfb3776accbf9"};
+  const app=initializeApp(cfg), auth=getAuth(app), db=getFirestore(app);
+
+  function alert2(msg,type){const b=document.getElementById('alert');b.className='alert '+type;b.textContent=msg;}
+
+  window.checkPw=function(v){
+    const [b1,b2,b3]=['b1','b2','b3'].map(id=>document.getElementById(id));
+    const lb=document.getElementById('pwlabel');
+    [b1,b2,b3].forEach(b=>b.className='pw-bar');
+    if(!v.length){lb.textContent='';return;}
+    if(v.length<6){b1.classList.add('weak');lb.textContent='Too short';return;}
+    const s=[/\d/.test(v),/[^a-zA-Z0-9]/.test(v),/[A-Z]/.test(v),v.length>=10].filter(Boolean).length;
+    if(s<=1){b1.classList.add('weak');lb.textContent='Weak';}
+    else if(s<=3){b1.classList.add('med');b2.classList.add('med');lb.textContent='Moderate';}
+    else{b1.classList.add('str');b2.classList.add('str');b3.classList.add('str');lb.textContent='Strong';}
+  };
+
+  window.register=async function(){
+    const name=document.getElementById('name').value.trim();
+    const username=document.getElementById('username').value.trim().toLowerCase().replace(/\s+/g,'');
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value;
+    const bio=document.getElementById('bio').value.trim();
+    const location=document.getElementById('location').value.trim();
+    if(!name||!email||!password){alert2('Please fill in all required fields.','err');return;}
+    if(password.length<6){alert2('Password must be at least 6 characters.','err');return;}
+    if(!document.getElementById('terms').checked){alert2('Please accept the Terms of Service.','err');return;}
+    const btn=document.getElementById('btn'),bt=document.getElementById('bt');
+    btn.disabled=true; bt.innerHTML='<span class="spin"></span>Creating…';
+    try{
+      const cred=await createUserWithEmailAndPassword(auth,email,password);
+      const user=cred.user;
+      const displayName=name;
+      await updateProfile(user,{displayName});
+      const finalUsername=username||name.split(' ')[0].toLowerCase();
+      await setDoc(doc(db,'users',user.uid),{
+        uid:user.uid, name, username:finalUsername, email, bio, location,
+        followers:0, following:0, posts:0,
+        followersList:[], followingList:[],
+        createdAt:new Date().toISOString()
+      });
+      alert2('Account created! Redirecting to login…','ok');
+      setTimeout(()=>window.location.href='index.html',1400);
+    }catch(e){
+      alert2(e.message,'err');
+      btn.disabled=false; bt.textContent='Create Account';
+    }
+  };
+</script>
+</body>
+</html>

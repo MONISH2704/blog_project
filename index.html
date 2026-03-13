@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thoughtflow — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#1a1209;--cream:#faf6ef;--gold:#c9933a;--gold-light:#e8b96a;--rust:#b85c38;--muted:#8a7968;--border:#d4c9b8;--warm:#f0e8d8}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;display:flex}
+    .panel-left{width:44%;background:var(--ink);display:flex;flex-direction:column;justify-content:space-between;padding:3rem;position:relative;overflow:hidden}
+    .panel-left::before{content:'';position:absolute;top:-120px;right:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(201,147,58,.2) 0%,transparent 68%)}
+    .panel-left::after{content:'';position:absolute;bottom:-90px;left:-90px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(184,92,56,.15) 0%,transparent 68%)}
+    .brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+    .brand-icon{width:40px;height:40px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .brand-name{font-family:'Playfair Display',serif;color:#fff;font-size:1.4rem}
+    .panel-copy{position:relative;z-index:1}
+    .panel-copy h2{font-family:'Playfair Display',serif;color:#fff;font-size:2.5rem;line-height:1.22;margin-bottom:1.1rem}
+    .panel-copy h2 em{color:var(--gold-light);font-style:italic}
+    .panel-copy p{color:rgba(255,255,255,.52);line-height:1.7;font-size:.92rem;max-width:310px;margin-bottom:2rem}
+    .quote-block{border-left:2px solid var(--gold);padding-left:1.1rem}
+    .quote-block p{color:rgba(255,255,255,.42);font-style:italic;font-size:.86rem}
+    .quote-block span{color:var(--gold);font-size:.76rem;font-weight:500;display:block;margin-top:.35rem}
+    .panel-footer{color:rgba(255,255,255,.22);font-size:.76rem}
+    .panel-right{flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 2rem}
+    .box{width:100%;max-width:420px;animation:up .5s ease}
+    @keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .box h1{font-family:'Playfair Display',serif;color:var(--ink);font-size:1.95rem;font-weight:700;margin-bottom:.35rem}
+    .box .sub{color:var(--muted);font-size:.88rem;margin-bottom:1.8rem;font-weight:500}
+    .alert{padding:.72rem 1rem;border-radius:8px;font-size:.86rem;margin-bottom:1rem;display:none}
+    .alert.err{background:#fdeaea;color:#c0392b;border:1px solid #f5c6cb;display:block}
+    .alert.ok{background:#eafaf1;color:#27ae60;border:1px solid #b7e4c7;display:block}
+    .fg{margin-bottom:1.25rem}
+    .fg label{display:block;font-size:.76rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin-bottom:.42rem}
+    .iw{position:relative}
+    .iw i{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.92rem;pointer-events:none}
+    .fg input{width:100%;padding:.82rem 1rem .82rem 2.75rem;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--ink);outline:none;transition:all .2s}
+    .fg input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,58,.1)}
+    .extras{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+    .chk{display:flex;align-items:center;gap:.45rem;font-size:.85rem;color:var(--muted);cursor:pointer}
+    .chk input{accent-color:var(--gold)}
+    .fgt{font-size:.85rem;color:var(--gold);text-decoration:none;font-weight:500}
+    .fgt:hover{text-decoration:underline}
+    .btn{width:100%;padding:.92rem;background:var(--ink);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.97rem;font-weight:500;cursor:pointer;transition:background .22s}
+    .btn:hover{background:var(--gold)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .div{display:flex;align-items:center;gap:.9rem;margin:1.5rem 0;color:var(--muted);font-size:.78rem}
+    .div::before,.div::after{content:'';flex:1;height:1px;background:var(--border)}
+    .reg{text-align:center;font-size:.88rem;color:var(--muted)}
+    .reg a{color:var(--gold);text-decoration:none;font-weight:500}
+    .reg a:hover{text-decoration:underline}
+    .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:5px}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    @media(max-width:760px){body{flex-direction:column}.panel-left{width:100%;padding:2rem 1.5rem}.panel-copy h2{font-size:1.8rem}.panel-right{padding:2rem 1.5rem}}
+    /* RESET PASSWORD MODAL */
+    .reset-overlay{position:fixed;inset:0;background:rgba(26,18,9,.65);backdrop-filter:blur(4px);z-index:600;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s}
+    .reset-overlay.open{opacity:1;pointer-events:all}
+    .reset-box{background:#fff;border-radius:18px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.22);transform:translateY(20px);transition:transform .26s;padding:2rem;position:relative}
+    .reset-overlay.open .reset-box{transform:translateY(0)}
+    .reset-box h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:.35rem;color:var(--ink)}
+    .reset-box .sub{color:var(--muted);font-size:.86rem;margin-bottom:1.3rem;line-height:1.55}
+    .reset-close{position:absolute;top:.9rem;right:.9rem;background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--muted);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .14s}
+    .reset-close:hover{background:var(--warm)}
+  </style>
+</head>
+<body>
+<div class="panel-left">
+  <a href="main.html" class="brand"><div class="brand-icon">✦</div><span class="brand-name">Thoughtflow</span></a>
+  <div class="panel-copy">
+    <h2>Share your <em>thoughts</em> with the world.</h2>
+    <p>Thoughtflow is where ideas breathe — write, tag, connect, and discover perspectives that matter.</p>
+    <div class="quote-block"><p>"The best blogs are like letters to a future friend you haven't met yet."</p><span>— The Thoughtflow Community</span></div>
+  </div>
+  <p class="panel-footer">Join thousands sharing their thoughts daily.</p>
+</div>
+<div class="panel-right">
+  <div class="box">
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to continue your journey</p>
+    <div class="alert" id="alert"></div>
+    <div class="fg"><label>Email Address</label><div class="iw"><i>✉</i><input type="email" id="email" placeholder="you@example.com"></div></div>
+    <div class="fg"><label>Password</label><div class="iw"><i>🔒</i><input type="password" id="password" placeholder="Your password"></div></div>
+    <div class="extras">
+      <label class="chk"><input type="checkbox"> Remember me</label>
+      <a href="#" class="fgt" onclick="openReset();return false;">Forgot password?</a>
+    </div>
+    <button class="btn" id="btn" onclick="login()"><span id="bt">Sign In</span></button>
+    <div class="div">or</div>
+    <div class="reg">Don't have an account? <a href="register.html">Create one free →</a></div>
+  </div>
+</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const auth = getAuth(initializeApp({apiKey:"AIzaSyCcgJ95GBqTe0mDRu09b5vvigmBlq7l8us",authDomain:"loginauthproject-34e2a.firebaseapp.com",projectId:"loginauthproject-34e2a",storageBucket:"loginauthproject-34e2a.firebasestorage.app",messagingSenderId:"538191570556",appId:"1:538191570556:web:5a3e3f2f4cfb3776accbf9"}));
+  onAuthStateChanged(auth, u => { if (u) window.location.href = 'main.html'; });
+  function alert2(msg,type){const b=document.getElementById('alert');b.className='alert '+type;b.textContent=msg;}
+  window.login = async function(){
+    const em=document.getElementById('email').value.trim(), pw=document.getElementById('password').value;
+    if(!em||!pw){alert2('Please fill in all fields.','err');return;}
+    const btn=document.getElementById('btn'),bt=document.getElementById('bt');
+    btn.disabled=true; bt.innerHTML='<span class="spin"></span>Signing in…';
+    try{
+      await signInWithEmailAndPassword(auth,em,pw);
+      alert2('Login successful! Redirecting…','ok');
+      setTimeout(()=>window.location.href='main.html',900);
+    }catch(e){
+      alert2('Invalid email or password.','err');
+      btn.disabled=false; bt.textContent='Sign In';
+    }
+  };
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !document.getElementById('resetOverlay').classList.contains('open')) window.login();
+  });
+
+  window.openReset = function() {
+    document.getElementById('resetOverlay').classList.add('open');
+    const al = document.getElementById('resetAlert');
+    al.className = 'alert';
+    al.textContent = '';
+    document.getElementById('resetEmail').value = '';
+  };
+  window.closeReset = function() {
+    document.getElementById('resetOverlay').classList.remove('open');
+  };
+  window.sendReset = async function() {
+    const em = document.getElementById('resetEmail').value.trim();
+    const al = document.getElementById('resetAlert');
+    const btn = document.getElementById('resetBtn'), bt = document.getElementById('resetBt');
+    if (!em) { al.className='alert err'; al.textContent='Please enter your email address.'; return; }
+    btn.disabled = true; bt.innerHTML = '<span class="spin"></span>Sending…';
+    try {
+      await sendPasswordResetEmail(auth, em);
+      al.className = 'alert ok';
+      al.textContent = '✓ Reset link sent! Check your inbox (and spam folder).';
+    } catch(e) {
+      al.className = 'alert err';
+      al.textContent = e.code === 'auth/user-not-found' ? 'No account found with this email.' : 'Error: ' + e.message;
+    }
+    btn.disabled = false; bt.textContent = 'Send Reset Link';
+  };
+</script>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="reset-overlay" id="resetOverlay" onclick="if(event.target===this)closeReset()">
+  <div class="reset-box">
+    <button class="reset-close" onclick="closeReset()">✕</button>
+    <h2>Reset Password</h2>
+    <p class="sub">Enter your email and we'll send you a reset link.</p>
+    <div class="alert" id="resetAlert"></div>
+    <div class="fg"><label>Email Address</label><div class="iw"><i>✉</i><input type="email" id="resetEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendReset()"></div></div>
+    <button class="btn" id="resetBtn" onclick="sendReset()"><span id="resetBt">Send Reset Link</span></button>
+  </div>
+</div>
+</body>
+</html>

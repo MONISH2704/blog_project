@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thoughtflow — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#1a1209;--cream:#faf6ef;--warm:#f0e8d8;--gold:#c9933a;--gold-light:#e8b96a;--rust:#b85c38;--muted:#8a7968;--border:#d4c9b8;--sw:260px;--hw:64px}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+
+    /* ── HEADER ── */
+    header{position:fixed;top:0;left:0;right:0;height:var(--hw);background:rgba(250,246,239,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.4rem;gap:1.1rem;z-index:200}
+    .brand{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .brand-icon{width:34px;height:34px;background:var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-size:1rem}
+    .brand-name{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--ink)}
+    .hsearch{flex:1;max-width:440px;position:relative}
+    .hsearch input{width:100%;padding:.5rem 1rem .5rem 2.3rem;border:1.5px solid var(--border);border-radius:50px;background:#fff;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--ink);outline:none;transition:all .2s}
+    .hsearch input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,58,.1)}
+    .si{position:absolute;left:.78rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.86rem;pointer-events:none}
+    .hright{display:flex;align-items:center;gap:.7rem;margin-left:auto}
+    .btn-write{display:flex;align-items:center;gap:.4rem;padding:.48rem 1rem;background:var(--ink);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:500;cursor:pointer;transition:background .2s;white-space:nowrap}
+    .btn-write:hover{background:var(--gold)}
+    .av-wrap{position:relative}
+    .av{width:36px;height:36px;border-radius:50%;background:var(--warm);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;font-weight:700;color:var(--rust);user-select:none}
+    .dd{position:absolute;top:calc(100% + .5rem);right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);padding:.4rem;min-width:188px;display:none;z-index:500}
+    .dd.open{display:block}
+    .dd a,.dd button{display:flex;align-items:center;gap:.55rem;padding:.58rem .8rem;border-radius:8px;font-size:.86rem;color:var(--ink);text-decoration:none;background:none;border:none;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .14s;text-align:left}
+    .dd a:hover,.dd button:hover{background:var(--warm)}
+    .dv{height:1px;background:var(--border);margin:.3rem 0}
+
+    /* ── LAYOUT ── */
+    .layout{display:grid;grid-template-columns:280px 1fr 320px;padding-top:var(--hw);min-height:100vh}
+
+    /* ── SMOOTH SCROLL ── */
+    html{scroll-behavior:smooth}
+
+    /* ── LEFT SIDEBAR ── */
+    .sl{position:sticky;top:var(--hw);height:calc(100vh - var(--hw));overflow-y:auto;padding:1.8rem 1.1rem;border-right:1px solid var(--border)}
+    .nl{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:0 .6rem;margin-bottom:.6rem}
+    .nsec{margin-bottom:2.2rem}
+    .ni{display:flex;align-items:center;gap:.75rem;padding:.68rem .85rem;border-radius:11px;color:var(--ink);text-decoration:none;font-size:.97rem;font-weight:500;transition:all .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left;margin-bottom:2px}
+    .ni:hover{background:var(--warm);color:var(--rust)}
+    .ni.active{background:var(--warm);color:var(--rust);font-weight:700}
+    .ni .ic{font-size:1rem;width:22px;height:22px;text-align:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;opacity:.7}
+    .ni .ic svg{width:18px;height:18px;stroke:currentColor}
+    .ni:hover .ic,.ni.active .ic{opacity:1}
+
+    /* ── MAIN ── */
+    .mc{padding:1.5rem 1.3rem;width:100%}
+    .mc-inner{max-width:72%;margin:0 auto}
+    .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.6rem}
+    .tab{padding:.75rem 1.3rem;font-size:.95rem;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .14s}
+    .tab:hover{color:var(--ink)}
+    .tab.active{color:var(--ink);border-bottom-color:var(--gold);font-weight:700}
+    .sec-hdr{display:none;align-items:center;gap:.8rem;margin-bottom:1.2rem}
+    .sec-hdr h2{font-family:'Playfair Display',serif;font-size:1.35rem}
+    .back-link{background:none;border:1px solid var(--border);border-radius:50px;padding:.28rem .8rem;font-size:.8rem;cursor:pointer;color:var(--muted);font-family:'DM Sans',sans-serif;transition:background .14s}
+    .back-link:hover{background:var(--warm)}
+
+    /* ── POST CARD ── */
+    .pc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1rem;transition:border-color .2s,box-shadow .2s;animation:up .3s ease both}
+    @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .pc:hover{border-color:var(--gold);box-shadow:0 6px 28px rgba(0,0,0,.08)}
+    .ph{display:flex;align-items:center;gap:.8rem;margin-bottom:.95rem}
+    .pav{width:42px;height:42px;border-radius:50%;background:var(--warm);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--rust);font-size:.96rem;flex-shrink:0;cursor:pointer;transition:opacity .15s}
+    .pav:hover{opacity:.75}
+    .pm{flex:1;min-width:0}
+    .paname{font-weight:700;font-size:.93rem;cursor:pointer;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .paname:hover{color:var(--rust);text-decoration:underline}
+    .ptime{font-size:.82rem;color:var(--muted)}
+    .delbtn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.1rem;padding:.2rem .4rem;border-radius:6px;transition:all .14s;flex-shrink:0}
+    .delbtn:hover{background:#fdeaea;color:#e74c3c}
+    .pbody h3{font-family:'Playfair Display',serif;font-size:1.17rem;font-weight:700;line-height:1.38;margin-bottom:.45rem;color:var(--ink)}
+    .pbody p{font-size:.91rem;line-height:1.72;color:#3d3427;white-space:pre-wrap;word-break:break-word}
+    .ptags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.8rem}
+    .tag{padding:.28rem .75rem;background:var(--warm);border-radius:50px;font-size:.8rem;color:var(--rust);font-weight:600;cursor:pointer;border:none;transition:all .14s;font-family:'DM Sans',sans-serif}
+    .tag:hover{background:var(--rust);color:#fff}
+    .pcat{display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .68rem;background:#fff3e8;border:1px solid #f0d5b0;border-radius:50px;font-size:.76rem;color:var(--gold);font-weight:600;margin-top:.6rem}
+    .rm-btn{background:none;border:none;color:var(--gold);font-size:.88rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:.3rem;padding:0;display:block}
+    .pf{display:flex;align-items:center;gap:.4rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--border);flex-wrap:wrap}
+    .ab{display:flex;align-items:center;gap:.3rem;padding:.38rem .72rem;border:1.5px solid transparent;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.81rem;font-weight:500;cursor:pointer;background:none;color:var(--muted);transition:all .18s;white-space:nowrap}
+    .ab:hover{background:var(--warm);color:var(--rust);border-color:var(--border)}
+    .ab.liked{color:#e74c3c;border-color:#f5c6cb;background:#fdeaea}
+    .ab.saved{color:var(--gold);border-color:#f0d9a8;background:#fdf5e4}
+    .ab.shr{margin-left:auto}
+    /* COMMENTS */
+    .cs{display:none;margin-top:.9rem;padding-top:.7rem;border-top:1px solid var(--warm)}
+    .cs.open{display:block}
+    .cir{display:flex;gap:.6rem;margin-bottom:.7rem}
+    .cir input{flex:1;padding:.52rem 1rem;border:1.5px solid var(--border);border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--ink);outline:none;background:var(--cream);transition:border-color .2s}
+    .cir input:focus{border-color:var(--gold)}
+    .cir button{padding:.52rem 1rem;background:var(--ink);color:#fff;border:none;border-radius:50px;font-size:.84rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;white-space:nowrap}
+    .cir button:hover{background:var(--gold)}
+    .cm{display:flex;gap:.6rem;padding:.4rem 0}
+    .cav{width:30px;height:30px;border-radius:50%;background:var(--warm);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:700;color:var(--rust);flex-shrink:0}
+    .cb{background:var(--warm);border-radius:12px;padding:.48rem .85rem;font-size:.86rem;line-height:1.5}
+    .cb strong{font-size:.8rem;display:block;margin-bottom:1px;color:var(--ink)}
+
+    /* ── WRITE MODAL ── */
+    .overlay{position:fixed;inset:0;background:rgba(26,18,9,.65);backdrop-filter:blur(4px);z-index:600;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s}
+    .overlay.open{opacity:1;pointer-events:all}
+    .modal{background:#fff;border-radius:18px;width:100%;max-width:640px;box-shadow:0 20px 60px rgba(0,0,0,.22);transform:translateY(20px);transition:transform .26s;max-height:90vh;overflow-y:auto}
+    .overlay.open .modal{transform:translateY(0)}
+    .mhdr{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+    .mhdr h3{font-family:'Playfair Display',serif;font-size:1.15rem}
+    .mclose{background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--muted);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .14s}
+    .mclose:hover{background:var(--warm)}
+    .mbody{padding:1.3rem 1.4rem}
+    .mbody input[type=text],.mbody textarea,.mbody select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:.76rem 1rem;font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--ink);outline:none;transition:border-color .2s;background:#fff;margin-bottom:.9rem;display:block}
+    .mbody input[type=text]:focus,.mbody textarea:focus,.mbody select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,58,.09)}
+    .mbody textarea{resize:vertical;min-height:130px;line-height:1.65}
+    .title-in{font-family:'Playfair Display',serif !important;font-size:1.15rem !important}
+    .tiw{border:1.5px solid var(--border);border-radius:10px;padding:.5rem .75rem;display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;cursor:text;margin-bottom:.6rem;transition:border-color .2s;min-height:48px}
+    .tiw:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,58,.09)}
+    .tpill{display:flex;align-items:center;gap:.28rem;background:var(--warm);color:var(--rust);padding:.2rem .6rem;border-radius:50px;font-size:.78rem;font-weight:500}
+    .tpill button{background:none;border:none;cursor:pointer;color:var(--rust);font-size:.88rem;line-height:1;padding:0}
+    .tiw input{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:.86rem;color:var(--ink);min-width:130px;background:transparent;padding:.18rem}
+    .cat-hint{font-size:.75rem;color:var(--muted);margin-bottom:.9rem;padding:0 .1rem}
+    .mfoot{padding:.9rem 1.4rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;background:#fff;z-index:2}
+    .cc{font-size:.78rem;color:var(--muted)}
+    .btn-pub{padding:.58rem 1.5rem;background:var(--ink);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;transition:background .2s}
+    .btn-pub:hover{background:var(--gold)}
+    .btn-pub:disabled{opacity:.55;cursor:not-allowed}
+
+    /* ── FOLLOWERS/FOLLOWING MODAL ── */
+    .list-modal{background:#fff;border-radius:18px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.22);transform:translateY(20px);transition:transform .26s;max-height:80vh;overflow-y:auto}
+    .overlay.open .list-modal{transform:translateY(0)}
+    .lm-item{display:flex;align-items:center;gap:.75rem;padding:.65rem .9rem;border-bottom:1px solid var(--warm);cursor:pointer;transition:background .14s}
+    .lm-item:last-child{border-bottom:none}
+    .lm-item:hover{background:var(--warm)}
+    .lm-av{width:38px;height:38px;border-radius:50%;background:var(--warm);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--rust);font-size:.9rem;flex-shrink:0}
+    .lm-info{flex:1;min-width:0}
+    .lm-name{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .lm-handle{font-size:.76rem;color:var(--muted)}
+
+    /* ── RIGHT SIDEBAR ── */
+    .sr{position:sticky;top:var(--hw);height:calc(100vh - var(--hw));overflow-y:auto;padding:1.8rem 1.1rem;border-left:1px solid var(--border)}
+    .pcard{background:linear-gradient(135deg,var(--ink) 0%,#2d200f 100%);border-radius:16px;padding:1.6rem;margin-bottom:1.2rem;color:#fff;position:relative;overflow:hidden}
+    .pcard::before{content:'✦';position:absolute;top:-10px;right:8px;font-size:5rem;opacity:.05;pointer-events:none}
+    .pcav{width:50px;height:50px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:.78rem}
+    .pcname{font-family:'Playfair Display',serif;font-size:1.04rem;font-weight:700;margin-bottom:.2rem}
+    .pchandle{color:rgba(255,255,255,.48);font-size:.82rem;margin-bottom:.9rem}
+    .pcstats{display:flex;gap:1.4rem}
+    .pcs{cursor:pointer}
+    .pcs:hover strong{color:var(--gold-light)}
+    .pcs span{display:block;font-size:.72rem;color:rgba(255,255,255,.45)}
+    .pcs strong{font-size:1.1rem;transition:color .15s}
+    .widget{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem;margin-bottom:1.1rem}
+    .wt{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.9rem;color:var(--ink)}
+    .tr-tag{display:flex;align-items:center;justify-content:space-between;padding:.46rem 0;border-bottom:1px solid var(--warm);cursor:pointer}
+    .tr-tag:last-child{border-bottom:none}
+    .tr-tag:hover .tn{color:var(--rust)}
+    .tn{font-size:.86rem;font-weight:600;transition:color .14s}
+    .tc{font-size:.75rem;color:var(--muted)}
+    .su{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;border-bottom:1px solid var(--warm)}
+    .su:last-child{border-bottom:none}
+    .suav{width:34px;height:34px;border-radius:50%;background:var(--warm);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--rust);font-size:.84rem;flex-shrink:0}
+    .sui{flex:1;min-width:0}
+    .sun{font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .suh{font-size:.74rem;color:var(--muted)}
+    .fbtn{padding:.28rem .72rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;color:var(--ink);transition:all .2s;white-space:nowrap;flex-shrink:0}
+    .fbtn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .fbtn.following{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .fbtn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* ── PHOTO UPLOAD ── */
+    .photo-upload-area{border:2px dashed var(--border);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.9rem;position:relative;overflow:hidden}
+    .photo-upload-area:hover{border-color:var(--gold);background:#fffdf8}
+    .photo-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+    .photo-upload-area .pu-label{font-size:.83rem;color:var(--muted);pointer-events:none}
+    .photo-upload-area .pu-label span{color:var(--gold);font-weight:500}
+    .photo-preview{position:relative;margin-bottom:.9rem}
+    .photo-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block}
+    .photo-remove{position:absolute;top:.45rem;right:.45rem;background:rgba(26,18,9,.65);color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .photo-remove:hover{background:var(--rust)}
+    .photo-size-err{color:#e74c3c;font-size:.8rem;margin-top:.3rem;display:none}
+    .post-img{width:100%;border-radius:10px;margin-top:.7rem;height:auto;display:block;cursor:zoom-in;transition:opacity .15s}
+    .post-img:hover{opacity:.92}
+    /* Image lightbox */
+    .img-lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:900;display:flex;align-items:center;justify-content:center;padding:1.2rem;opacity:0;pointer-events:none;transition:opacity .22s;cursor:zoom-out}
+    .img-lb.open{opacity:1;pointer-events:all}
+    .img-lb img{max-width:100%;max-height:92vh;border-radius:10px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+    .img-lb-close{position:absolute;top:1rem;right:1.2rem;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.4rem;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .img-lb-close:hover{background:rgba(255,255,255,.3)}
+    /* ── DELETE CONFIRM MODAL ── */
+    .del-overlay{position:fixed;inset:0;background:rgba(26,18,9,.65);backdrop-filter:blur(4px);z-index:700;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s}
+    .del-overlay.open{opacity:1;pointer-events:all}
+    .del-box{background:#fff;border-radius:18px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.22);transform:translateY(20px);transition:transform .26s;padding:1.8rem;text-align:center}
+    .del-overlay.open .del-box{transform:translateY(0)}
+    .del-ic{font-size:2.4rem;margin-bottom:.8rem}
+    .del-box h3{font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.45rem}
+    .del-box p{color:var(--muted);font-size:.87rem;margin-bottom:1.4rem;line-height:1.5}
+    .del-actions{display:flex;gap:.7rem;justify-content:center}
+    .del-cancel{padding:.56rem 1.4rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.88rem;cursor:pointer;color:var(--muted);transition:background .15s}
+    .del-cancel:hover{background:var(--warm)}
+    .del-confirm-btn{padding:.56rem 1.4rem;background:#e74c3c;color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:background .2s}
+    .del-confirm-btn:hover{background:#c0392b}
+    .del-confirm-btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--ink);color:#fff;padding:.72rem 1.1rem;border-radius:10px;font-size:.86rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .28s;box-shadow:0 4px 18px rgba(0,0,0,.15);max-width:300px}
+    .toast.show{transform:translateY(0);opacity:1}
+
+    /* ── STATES ── */
+    .ld{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
+    .spin{display:inline-block;width:24px;height:24px;border:2.5px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .empty{text-align:center;padding:3rem 1rem}
+    .empty .em{font-size:2.4rem;margin-bottom:.9rem}
+    .empty h3{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.4rem}
+    .empty p{color:var(--muted);font-size:.88rem}
+    .err-box{background:#fdeaea;border:1px solid #f5c6cb;border-radius:10px;padding:.8rem 1rem;font-size:.86rem;color:#c0392b;margin-bottom:1rem}
+
+    /* ── SEARCH USER CARDS ── */
+    .suc{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;background:#fff;border:1px solid var(--border);border-radius:12px;margin-bottom:.45rem;transition:border-color .18s,box-shadow .18s}
+    .suc:hover{border-color:var(--gold);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .suc-av{width:42px;height:42px;border-radius:50%;background:var(--warm);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--rust);font-size:1rem;flex-shrink:0;cursor:pointer}
+    .suc-info{flex:1;min-width:0;cursor:pointer}
+    .suc-name{font-weight:600;font-size:.92rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .suc-meta{font-size:.76rem;color:var(--muted);margin-top:.1rem}
+    .suc-follow{padding:.32rem .85rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;color:var(--ink);transition:all .18s;white-space:nowrap;flex-shrink:0}
+    .suc-follow:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .suc-follow.following{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .suc-follow:disabled{opacity:.5;cursor:not-allowed}
+    .search-section-hdr{font-size:.75rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:.2rem 0 .55rem}
+    @media(max-width:1100px){.layout{grid-template-columns:var(--sw) 1fr}.sr{display:none}}
+    @media(max-width:760px){.layout{grid-template-columns:1fr}.sl{display:none}.mc{padding:1rem}.hsearch{display:none}}
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a href="main.html" class="brand">
+    <div class="brand-icon">✦</div>
+    <span class="brand-name">Thoughtflow</span>
+  </a>
+  <div class="hsearch">
+    <span class="si">🔍</span>
+    <input type="text" placeholder="Search posts, #tags, @users…" oninput="handleSearch(this.value)">
+  </div>
+  <div class="hright">
+    <button class="btn-write" onclick="openWrite()">✏ Write</button>
+    <div class="av-wrap">
+      <div class="av" id="av" onclick="toggleDD()">?</div>
+      <div class="dd" id="dd">
+        <a href="profile.html">👤 My Profile</a>
+        <a href="bookmarks.html">🔖 Bookmarks</a>
+        <a href="myposts.html">📝 My Posts</a>
+        <div class="dv"></div>
+        <button onclick="logout()">🚪 Sign Out</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sl">
+    <div class="nsec">
+      <div class="nl">Explore</div>
+      <button class="ni active" onclick="navClick(this,'all')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Home Feed</button>
+      <button class="ni" onclick="navClick(this,'trending')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>Trending</button>
+      <button class="ni" onclick="navClick(this,'latest')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>Latest</button>
+    </div>
+    <div class="nsec">
+      <div class="nl">Categories</div>
+      <button class="ni" onclick="navClick(this,'cat:technology')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></span>Technology</button>
+      <button class="ni" onclick="navClick(this,'cat:mindfulness')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span>Mindfulness</button>
+      <button class="ni" onclick="navClick(this,'cat:creativity')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17.5 12c.828 0 1.5.672 1.5 1.5v.5h-3v-.5c0-.828.672-1.5 1.5-1.5z"/><path d="M3 20h18M3 20l2-6h4l1 3h2l1-3h4l2 6"/></svg></span>Creativity</button>
+      <button class="ni" onclick="navClick(this,'cat:science')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></span>Science</button>
+      <button class="ni" onclick="navClick(this,'cat:travel')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></span>Travel</button>
+      <button class="ni" onclick="navClick(this,'cat:books')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>Books</button>
+      <button class="ni" onclick="navClick(this,'cat:life')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12 22V12"/><path d="M12 12C12 12 7 9 7 5a5 5 0 0110 0c0 4-5 7-5 7z"/><path d="M12 12c0 0-5 3-5 7"/><path d="M12 12c0 0 5 3 5 7"/></svg></span>Life</button>
+    </div>
+    <div class="nsec">
+      <div class="nl">Me</div>
+      <button class="ni" onclick="location.href='profile.html'"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>Profile</button>
+      <button class="ni" onclick="location.href='bookmarks.html'"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></span>Bookmarks</button>
+      <button class="ni" onclick="location.href='myposts.html'"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>My Posts</button>
+    </div>
+  </aside>
+
+  <!-- MAIN FEED -->
+  <main class="mc">
+    <div class="mc-inner">
+    <div class="sec-hdr" id="secHdr">
+      <h2 id="secTitle"></h2>
+      <button class="back-link" onclick="clearSection()">← All posts</button>
+    </div>
+    <!-- Search people results panel (shown when searching) -->
+    <div id="searchPeoplePanel" style="display:none;margin-bottom:1.1rem">
+      <div class="search-section-hdr">👥 People</div>
+      <div id="searchPeopleList"></div>
+    </div>
+    <div class="tabs" id="tabsRow">
+      <button class="tab active" onclick="switchTab(this,'all')">For You</button>
+      <button class="tab" onclick="switchTab(this,'trending')">Trending</button>
+      <button class="tab" onclick="switchTab(this,'latest')">Latest</button>
+    </div>
+    <div id="feed"><div class="ld"><div class="spin"></div><p style="margin-top:.8rem;font-size:.86rem">Loading posts…</p></div></div>
+    </div>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sr">
+    <div class="pcard">
+      <div class="pcav" id="pcav">?</div>
+      <div class="pcname" id="pcname">Loading…</div>
+      <div class="pchandle" id="pchandle">@user</div>
+      <div class="pcstats">
+        <div class="pcs" onclick="openFollowList('posts')"><strong id="stPosts">0</strong><span>Posts</span></div>
+        <div class="pcs" onclick="openFollowList('followers')"><strong id="stFollowers">0</strong><span>Followers</span></div>
+        <div class="pcs" onclick="openFollowList('following')"><strong id="stFollowing">0</strong><span>Following</span></div>
+      </div>
+    </div>
+    <div class="widget">
+      <div class="wt">🔥 Trending Tags</div>
+      <div id="trendTags"><div style="color:var(--muted);font-size:.82rem">Loading…</div></div>
+    </div>
+    <div class="widget">
+      <div class="wt" id="peopleWidgetTitle">👥 People to Follow</div>
+      <div id="peopleList"><div class="ld" style="padding:.5rem"><div class="spin" style="width:16px;height:16px;border-width:2px"></div></div></div>
+    </div>
+    <!-- Quick Tips / Fill widget -->
+    <div class="widget" id="quickTips">
+      <div class="wt">💡 Quick Tips</div>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7">
+        <p style="margin-bottom:.5rem">✏️ Click <strong>Write</strong> to share a thought with the world.</p>
+        <p style="margin-bottom:.5rem">🔖 Bookmark posts to read them later.</p>
+        <p style="margin-bottom:.5rem">#️⃣ Add hashtags to help others discover your posts.</p>
+        <p>👥 Follow people to see their posts first.</p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- WRITE MODAL -->
+<div class="overlay" id="writeModal">
+  <div class="modal">
+    <div class="mhdr">
+      <h3>Share a Thought</h3>
+      <button class="mclose" onclick="closeWrite()">✕</button>
+    </div>
+    <div class="mbody">
+      <div id="pubErr" class="err-box" style="display:none"></div>
+      <input type="text" class="title-in" id="wTitle" placeholder="Give your thought a title… (optional)" oninput="updateCatHint()">
+      <textarea id="wContent" placeholder="What's on your mind? Share your thought with the world…" oninput="updateCC(this);updateCatHint()"></textarea>
+      <div class="tiw" onclick="document.getElementById('tagIn').focus()">
+        <div id="tagPills"></div>
+        <input type="text" id="tagIn" placeholder="Add #hashtags and press Enter…" onkeydown="handleTag(event)">
+      </div>
+      <div class="cat-hint" id="catHint">💡 Category auto-detected from hashtags</div>
+      <select id="wCat" onchange="onCatChange(this.value)">
+        <option value="">📁 Select a category (optional)</option>
+        <option value="technology">💻 Technology</option>
+        <option value="mindfulness">🧘 Mindfulness</option>
+        <option value="creativity">🎨 Creativity</option>
+        <option value="science">🔬 Science</option>
+        <option value="travel">✈️ Travel</option>
+        <option value="books">📚 Books</option>
+        <option value="life">🌿 Life</option>
+        <option value="other">✨ Other</option>
+      </select>
+      <!-- PHOTO UPLOAD (optional, max 200KB) -->
+      <div id="photoPreview" class="photo-preview" style="display:none">
+        <img id="previewImg" src="" alt="Post image">
+        <button class="photo-remove" onclick="removePhoto()" title="Remove photo">✕</button>
+      </div>
+      <div class="photo-upload-area" id="photoUploadArea">
+        <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoSelect(this)">
+        <div class="pu-label">📷 <span>Add a photo</span> (optional · max 200KB)</div>
+      </div>
+      <div class="photo-size-err" id="photoSizeErr">⚠️ Image exceeds 200KB. Please choose a smaller file.</div>
+    </div>
+    <div class="mfoot">
+      <span class="cc" id="cc">0 / 1000</span>
+      <button class="btn-pub" id="pubBtn" onclick="publish()">Publish →</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="del-overlay" id="delModal">
+  <div class="del-box">
+    <div class="del-ic">🗑️</div>
+    <h3>Delete Post?</h3>
+    <p>This action cannot be undone. Your post will be permanently removed.</p>
+    <div class="del-actions">
+      <button class="del-cancel" onclick="closeDelModal()">Cancel</button>
+      <button class="del-confirm-btn" id="delConfirmBtn" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOLLOWERS / FOLLOWING LIST MODAL -->
+<div class="overlay" id="listModal">
+  <div class="list-modal">
+    <div class="mhdr">
+      <h3 id="listTitle">Followers</h3>
+      <button class="mclose" onclick="closeListModal()">✕</button>
+    </div>
+    <div id="listContent" style="padding:.5rem 0"><div class="ld"><div class="spin"></div></div></div>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div class="img-lb" id="imgLb" onclick="if(event.target===this||event.target.closest('.img-lb-close'))closeLb()">
+  <button class="img-lb-close" onclick="closeLb()">✕</button>
+  <img id="imgLbImg" src="" alt="Full image">
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, getDocs, getDoc, doc,
+    updateDoc, deleteDoc, query, orderBy, serverTimestamp,
+    increment, arrayUnion, arrayRemove, onSnapshot, where
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const FB = {
+    apiKey:"AIzaSyCcgJ95GBqTe0mDRu09b5vvigmBlq7l8us",
+    authDomain:"loginauthproject-34e2a.firebaseapp.com",
+    projectId:"loginauthproject-34e2a",
+    storageBucket:"loginauthproject-34e2a.firebasestorage.app",
+    messagingSenderId:"538191570556",
+    appId:"1:538191570556:web:5a3e3f2f4cfb3776accbf9"
+  };
+  const app = initializeApp(FB);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  /* ── CATEGORY → HASHTAG MAP ── */
+  const CAT_MAP = {
+    technology:  ['ai','tech','coding','software','hardware','web','data','cloud','cybersecurity','blockchain','programming','developer','javascript','python','ux','api','devops','ml','frontend','backend','computer','internet','app','mobile','startup','innovation','digital','robot','automation','machine','learning','algorithm','database','server','network','crypto','nft','gadget','code','github','linux','windows','android','ios','saas','product','engineering'],
+    mindfulness: ['meditation','wellness','mentalhealth','selfcare','mindfulness','yoga','calm','breathe','healing','anxiety','peace','gratitude','balance','stress','therapy','mindset','positivity','awareness','presence','mental','health','burnout','wellbeing','sleep','rest','breath','clarity','focus','emotions','feelings','inner','spiritual','soul','body','mind','mood','depression','happiness','joy'],
+    creativity:  ['art','design','music','poetry','writing','photography','film','fashion','illustration','craft','creative','drawing','painting','sketch','diy','dance','theatre','animation','video','graphic','logo','color','visual','artist','musician','singer','band','album','song','lyrics','studio','camera','photo','portrait','edit','photoshop','figma','adobe','canvas','sculpt','print','collage'],
+    science:     ['physics','biology','chemistry','space','climate','research','medicine','environment','engineering','maths','math','astronomy','genetics','quantum','neuroscience','robotics','science','experiment','theory','discovery','nasa','ocean','earth','planet','atom','cell','dna','evolution','fossil','lab','study','data','analysis','statistics','psychology','cognitive','brain','nutrition','diet','exercise','fitness','workout','gym','health'],
+    travel:      ['wanderlust','adventure','explore','backpacking','roadtrip','travel','culture','destinations','hiking','trip','journey','vacation','holiday','tourism','abroad','nature','flight','airport','passport','visa','hotel','hostel','beach','mountain','forest','city','country','world','globe','map','guide','itinerary','solo','camping','trek','trail','landscape','sunset','sunrise','sea','ocean','river'],
+    books:       ['reading','books','literature','fiction','nonfiction','poetry','review','bookclub','author','library','kindle','novel','story','writing','bibliography','scifi','fantasy','thriller','mystery','biography','memoir','selfhelp','horror','romance','classic','publish','writer','reader','bookworm','chapter','plot','character','narrative','prose','genre','bookstagram','audiobook','ebook','quote','philosophy','wisdom'],
+    life:        ['life','relationships','family','career','motivation','productivity','happiness','growth','thoughts','philosophy','journal','reflection','personal','diary','opinion','essay','love','friendship','work','job','money','finance','goals','success','failure','lesson','experience','memory','nostalgia','childhood','parenting','marriage','dating','social','community','culture','society','politics','news','current','event','sports','food','cooking','recipe']
+  };
+
+  function detectCategory(tags, title='', bodyText='') {
+    // Build a combined word list from tags + title words + first 100 chars of content
+    const titleWords = title.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+    const bodyWords  = bodyText.toLowerCase().slice(0,200).split(/\W+/).filter(w => w.length > 2);
+    const allWords   = [...tags.map(t => t.toLowerCase()), ...titleWords, ...bodyWords];
+    const scores = {};
+    for (const [cat, kws] of Object.entries(CAT_MAP)) {
+      scores[cat] = allWords.filter(w => kws.includes(w)).length;
+    }
+    const best = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+    return (best && best[1] > 0) ? best[0] : '';
+  }
+
+  /* ── STATE ── */
+  let CU   = null;   // current Firebase user
+  let CUD  = null;   // current user Firestore doc
+  let allPosts = [];
+  let allUsers = [];
+  let currentMode = 'all';
+  let currentTags = [];
+  let liked     = [];   // loaded per-user from Firestore
+  let bookmarks = [];   // loaded per-user from Firestore
+  let unsubPosts = null;
+
+  /* ── SINGLE AUTH LISTENER ── */
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    CU = user;
+
+    // header avatar
+    const init = (user.displayName || user.email)[0].toUpperCase();
+    document.getElementById('av').textContent    = init;
+    document.getElementById('pcav').textContent  = init;
+    document.getElementById('pcname').textContent = user.displayName || user.email.split('@')[0];
+
+    // load user doc
+    try {
+      const ud = await getDoc(doc(db, 'users', user.uid));
+      if (ud.exists()) {
+        CUD = ud.data();
+        document.getElementById('pchandle').textContent   = '@' + (CUD.username || user.email.split('@')[0]);
+        document.getElementById('stFollowers').textContent = CUD.followers  || 0;
+        document.getElementById('stFollowing').textContent = CUD.following  || 0;
+        // Load per-user liked and bookmarks from Firestore
+        liked     = CUD.likedPosts    || [];
+        bookmarks = CUD.bookmarkedPosts || [];
+        myFollowingSet = new Set(CUD.followingList || []);
+        // Recalculate following/followers counts from actual arrays to fix corruption
+        const actualFollowing = (CUD.followingList || []).length;
+        const actualFollowers = (CUD.followersList || []).length;
+        if (actualFollowing !== (CUD.following || 0) || actualFollowers !== (CUD.followers || 0)) {
+          await updateDoc(doc(db, 'users', user.uid), {
+            following: actualFollowing,
+            followers: actualFollowers
+          });
+          document.getElementById('stFollowers').textContent = actualFollowers;
+          document.getElementById('stFollowing').textContent = actualFollowing;
+        }
+      }
+    } catch(e) { console.warn('user doc:', e.message); }
+
+    startPostListener();
+    loadPeople();
+  });
+
+  /* ── REAL-TIME POST LISTENER ── */
+  function startPostListener() {
+    if (unsubPosts) unsubPosts();
+    const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'));
+    unsubPosts = onSnapshot(q,
+      snap => {
+        allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById('stPosts').textContent = allPosts.filter(p => p.authorId === CU?.uid).length;
+        renderByMode();
+        buildTrendingTags();
+      },
+      err => {
+        console.error('snapshot error:', err);
+        document.getElementById('feed').innerHTML =
+          `<div class="err-box">⚠️ Could not load posts: ${err.message}<br><small>Check Firestore rules — allow read/write for authenticated users.</small></div>`;
+      }
+    );
+  }
+
+  /* ── RENDER HELPERS ── */
+  function renderByMode() {
+    if (currentMode === 'all')       render(allPosts);
+    else if (currentMode === 'trending') render([...allPosts].sort((a,b) => (b.likes||0)-(a.likes||0)));
+    else if (currentMode === 'latest')   render([...allPosts]);
+    else if (currentMode.startsWith('cat:')) renderCat(currentMode.slice(4));
+    else if (currentMode.startsWith('tag:')) renderTag(currentMode.slice(4));
+  }
+
+  function renderCat(cat) {
+    const kws = CAT_MAP[cat] || [];
+    render(allPosts.filter(p =>
+      p.category === cat || (p.tags && p.tags.some(t => kws.includes(t.toLowerCase())))
+    ));
+  }
+
+  function renderTag(tag) {
+    render(allPosts.filter(p => p.tags && p.tags.map(t=>t.toLowerCase()).includes(tag.toLowerCase())));
+  }
+
+  function render(posts) {
+    const feed = document.getElementById('feed');
+    if (!posts.length) {
+      feed.innerHTML = `<div class="empty"><div class="em">✍️</div><h3>No thoughts here yet</h3><p>Be the first to share something!</p></div>`;
+      return;
+    }
+    feed.innerHTML = posts.map((p, i) => {
+      const init   = (p.authorName || '?')[0].toUpperCase();
+      const t      = p.createdAt ? timeAgo(p.createdAt.toDate ? p.createdAt.toDate() : new Date(p.createdAt)) : 'just now';
+      const lk     = liked.includes(p.id);
+      const sv     = bookmarks.includes(p.id);
+      const isMe   = p.authorId === CU?.uid;
+      const content= p.content || '';
+      const pre    = content.length > 240 ? content.slice(0, 240) + '…' : content;
+      const tagsHtml = (p.tags || []).map(tg => `<button class="tag" onclick="goTag('${tg}')">#${tg}</button>`).join('');
+      const catLabel = p.category ? `<span class="pcat">📁 ${p.category}</span>` : '';
+      const safeTitle = (p.title || '').replace(/`/g,'').replace(/'/g,"\\'");
+      return `<div class="pc" id="pc-${p.id}" style="animation-delay:${Math.min(i,8)*.04}s">
+        <div class="ph">
+          <div class="pav" onclick="viewUser('${p.authorId}')">${init}</div>
+          <div class="pm">
+            <div class="paname" onclick="viewUser('${p.authorId}')">${p.authorName || 'Anonymous'}</div>
+            <div class="ptime">${t}${p.category ? ' · ' + p.category : ''}</div>
+          </div>
+          ${isMe ? `<button class="delbtn" title="Delete post" onclick="delPost('${p.id}')">🗑</button>` : ''}
+        </div>
+        <div class="pbody">
+          ${p.title ? `<h3>${p.title}</h3>` : ''}
+          <p id="pctxt-${p.id}">${pre}</p>
+          ${content.length > 240 ? `<button class="rm-btn" id="rm-${p.id}" onclick="toggleRM('${p.id}',this)">Read more</button>` : ''}
+          ${p.imageBase64 ? `<img class="post-img" src="${p.imageBase64}" alt="Post image" loading="lazy" onclick="openLb(this.src)">` : ''}
+          <div class="ptags">${tagsHtml}</div>
+          ${catLabel}
+        </div>
+        <div class="pf">
+          <button class="ab${lk?' liked':''}" id="lbtn-${p.id}" onclick="toggleLike('${p.id}')">
+            ${lk?'❤️':'🤍'} <span id="lcnt-${p.id}">${p.likes||0}</span>
+          </button>
+          <button class="ab" onclick="toggleComments('${p.id}')">
+            💬 <span id="ccnt-${p.id}">${p.comments||0}</span>
+          </button>
+          <button class="ab${sv?' saved':''}" id="sbtn-${p.id}" onclick="toggleSave('${p.id}')">
+            ${sv?'🔖':'📌'}
+          </button>
+          <button class="ab shr" onclick="sharePost('${p.id}','${safeTitle}')">🔗 Share</button>
+        </div>
+        <div class="cs" id="cs-${p.id}">
+          <div class="cir">
+            <input type="text" placeholder="Write a comment…" id="cin-${p.id}" onkeydown="if(event.key==='Enter')postComment('${p.id}')">
+            <button onclick="postComment('${p.id}')">Post</button>
+          </div>
+          <div id="clist-${p.id}"></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    // store full content for read-more
+    posts.forEach(p => {
+      if ((p.content || '').length > 240) {
+        document.getElementById(`rm-${p.id}`)?.setAttribute('data-full', p.content);
+      }
+    });
+  }
+
+  /* ── READ MORE ── */
+  window.toggleRM = function(id, btn) {
+    const el   = document.getElementById(`pctxt-${id}`);
+    const full = btn.getAttribute('data-full') || el.textContent;
+    if (btn.textContent === 'Read more') {
+      btn.setAttribute('data-full', full);
+      el.textContent = full;
+      btn.textContent = 'Show less';
+    } else {
+      el.textContent = full.slice(0, 240) + '…';
+      btn.textContent = 'Read more';
+    }
+  };
+
+  /* ── LIKE ── */
+  window.toggleLike = async function(id) {
+    if (!CU) return;
+    const btn = document.getElementById(`lbtn-${id}`);
+    const post = allPosts.find(p => p.id === id);
+    if (!post) return;
+    const idx = liked.indexOf(id);
+    if (idx > -1) {
+      // Unlike
+      liked.splice(idx, 1);
+      btn.classList.remove('liked');
+      const newCount = Math.max(0, (post.likes || 0) - 1);
+      btn.innerHTML = `🤍 <span id="lcnt-${id}">${newCount}</span>`;
+      await updateDoc(doc(db,'posts',id), { likes: increment(-1) });
+      await updateDoc(doc(db,'users', CU.uid), { likedPosts: arrayRemove(id) });
+    } else {
+      // Like
+      liked.push(id);
+      btn.classList.add('liked');
+      const newCount = (post.likes || 0) + 1;
+      btn.innerHTML = `❤️ <span id="lcnt-${id}">${newCount}</span>`;
+      await updateDoc(doc(db,'posts',id), { likes: increment(1) });
+      await updateDoc(doc(db,'users', CU.uid), { likedPosts: arrayUnion(id) });
+    }
+  };
+
+  /* ── BOOKMARK ── */
+  window.toggleSave = async function(id) {
+    if (!CU) return;
+    const idx = bookmarks.indexOf(id);
+    const btn = document.getElementById(`sbtn-${id}`);
+    if (idx > -1) {
+      bookmarks.splice(idx, 1);
+      btn.classList.remove('saved');
+      btn.innerHTML = '📌';
+      toast('Bookmark removed');
+      await updateDoc(doc(db,'users', CU.uid), { bookmarkedPosts: arrayRemove(id) });
+    } else {
+      bookmarks.push(id);
+      btn.classList.add('saved');
+      btn.innerHTML = '🔖';
+      toast('Bookmarked!');
+      await updateDoc(doc(db,'users', CU.uid), { bookmarkedPosts: arrayUnion(id) });
+    }
+  };
+
+  /* ── COMMENTS ── */
+  window.toggleComments = async function(id) {
+    const cs = document.getElementById(`cs-${id}`);
+    cs.classList.toggle('open');
+    if (cs.classList.contains('open')) loadComments(id);
+  };
+
+  async function loadComments(id) {
+    const list = document.getElementById(`clist-${id}`);
+    list.innerHTML = '<div style="color:var(--muted);font-size:.8rem;padding:.2rem">Loading…</div>';
+    try {
+      const q    = query(collection(db,'posts',id,'comments'), orderBy('createdAt','asc'));
+      const snap = await getDocs(q);
+      if (snap.empty) { list.innerHTML = '<div style="color:var(--muted);font-size:.8rem;padding:.2rem 0">No comments yet. Be first!</div>'; return; }
+      list.innerHTML = snap.docs.map(d => {
+        const c = d.data(), init = (c.authorName||'?')[0].toUpperCase();
+        return `<div class="cm"><div class="cav">${init}</div><div class="cb"><strong>${c.authorName||'Anonymous'}</strong>${c.text}</div></div>`;
+      }).join('');
+    } catch(e) { list.innerHTML = `<div style="color:red;font-size:.8rem">Error: ${e.message}</div>`; }
+  }
+
+  window.postComment = async function(id) {
+    if (!CU) return;
+    const inp  = document.getElementById(`cin-${id}`);
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = '';
+    inp.disabled = true;
+    try {
+      await addDoc(collection(db,'posts',id,'comments'), {
+        text,
+        authorId:   CU.uid,
+        authorName: CU.displayName || CU.email.split('@')[0],
+        createdAt:  serverTimestamp()
+      });
+      await updateDoc(doc(db,'posts',id), { comments: increment(1) });
+      loadComments(id);
+      toast('Comment posted!');
+    } catch(e) { toast('Error: ' + e.message); }
+    inp.disabled = false;
+  };
+
+  /* ── DELETE POST ── */
+  let _pendingDelId = null;
+  window.delPost = function(id) {
+    _pendingDelId = id;
+    document.getElementById('delModal').classList.add('open');
+  };
+  window.closeDelModal = function() {
+    document.getElementById('delModal').classList.remove('open');
+    document.getElementById('delConfirmBtn').disabled = false;
+    _pendingDelId = null;
+  };
+  window.confirmDelete = async function() {
+    if (!_pendingDelId) return;
+    const id = _pendingDelId;
+    document.getElementById('delConfirmBtn').disabled = true;
+    try {
+      await deleteDoc(doc(db,'posts',id));
+      // Decrement user's post count
+      try { await updateDoc(doc(db,'users', CU.uid), { posts: increment(-1) }); } catch(e) {}
+      toast('Post deleted');
+    } catch(e) { toast('Error: ' + e.message); }
+    closeDelModal();
+  };
+
+  /* ── SHARE ── */
+  window.sharePost = function(id, title) {
+    try { navigator.clipboard.writeText(location.href.split('?')[0] + '?post=' + id); } catch(e) {}
+    toast('🔗 Link copied to clipboard!');
+  };
+
+  /* ── VIEW USER ── */
+  window.viewUser = function(uid) {
+    if (uid) location.href = `profile.html?uid=${uid}`;
+  };
+
+  /* ── PUBLISH ── */
+  window.openWrite  = () => { document.getElementById('pubErr').style.display='none'; document.getElementById('writeModal').classList.add('open'); };
+  window.closeWrite = () => {
+    document.getElementById('writeModal').classList.remove('open');
+    document.getElementById('wTitle').value   = '';
+    document.getElementById('wContent').value = '';
+    const catEl2 = document.getElementById('wCat');
+    catEl2.value = '';
+    catEl2.setAttribute('data-manual','0');
+    document.getElementById('cc').textContent = '0 / 1000';
+    document.getElementById('catHint').textContent = '💡 Category auto-detected from hashtags & content';
+    document.getElementById('catHint').style.color = 'var(--muted)';
+    document.getElementById('pubErr').style.display = 'none';
+    currentTags = [];
+    document.getElementById('tagPills').innerHTML = '';
+    document.getElementById('tagIn').value = '';
+    const btn = document.getElementById('pubBtn');
+    btn.disabled = false; btn.textContent = 'Publish →';
+    removePhoto();
+  };
+
+  /* ── PHOTO UPLOAD ── */
+  let _selectedPhoto = null;
+  window.handlePhotoSelect = function(input) {
+    const file = input.files[0];
+    const errEl = document.getElementById('photoSizeErr');
+    errEl.style.display = 'none';
+    if (!file) { _selectedPhoto = null; return; }
+    if (file.size > 200 * 1024) {
+      errEl.style.display = 'block';
+      input.value = '';
+      _selectedPhoto = null;
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      _selectedPhoto = e.target.result;
+      document.getElementById('previewImg').src = _selectedPhoto;
+      document.getElementById('photoPreview').style.display = 'block';
+      document.getElementById('photoUploadArea').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  };
+  window.removePhoto = function() {
+    _selectedPhoto = null;
+    const prev = document.getElementById('photoPreview');
+    const area = document.getElementById('photoUploadArea');
+    const err  = document.getElementById('photoSizeErr');
+    const inp  = document.getElementById('photoInput');
+    if (prev) prev.style.display = 'none';
+    if (area) area.style.display = 'block';
+    if (err)  err.style.display  = 'none';
+    if (inp)  inp.value = '';
+  };
+
+  window.publish = async function() {
+    // Guard: must be logged in
+    if (!CU) { showPubErr('You must be logged in to post.'); return; }
+
+    const title   = document.getElementById('wTitle').value.trim();
+    const content = document.getElementById('wContent').value.trim();
+    let   cat     = document.getElementById('wCat').value;
+
+    if (!content) { showPubErr('Please write something before publishing!'); return; }
+    if (!cat) cat = detectCategory(currentTags, title, content);
+
+    const btn = document.getElementById('pubBtn');
+    btn.disabled = true; btn.textContent = 'Publishing…';
+    document.getElementById('pubErr').style.display = 'none';
+
+    try {
+      const postData = {
+        title:      title || '',
+        content:    content,
+        tags:       [...currentTags],
+        category:   cat || '',
+        authorId:   CU.uid,
+        authorName: CU.displayName || CU.email.split('@')[0],
+        authorEmail:CU.email,
+        likes:      0,
+        comments:   0,
+        createdAt:  serverTimestamp()
+      };
+      if (_selectedPhoto) postData.imageBase64 = _selectedPhoto;
+      await addDoc(collection(db, 'posts'), postData);
+      // Update user's posts count in their user doc
+      try { await updateDoc(doc(db,'users', CU.uid), { posts: increment(1) }); } catch(e) {}
+      closeWrite();
+      toast('✦ Your thought is live!');
+      // scroll to top of feed
+      window.scrollTo({ top: document.querySelector('.mc').offsetTop - 80, behavior: 'smooth' });
+    } catch(e) {
+      showPubErr('Failed to publish: ' + e.message + ' — Check Firestore security rules.');
+      btn.disabled = false; btn.textContent = 'Publish →';
+    }
+  };
+
+  function showPubErr(msg) {
+    const box = document.getElementById('pubErr');
+    box.textContent = msg;
+    box.style.display = 'block';
+  }
+
+  window.updateCC = function(el) {
+    const l = el.value.length;
+    document.getElementById('cc').textContent = l + ' / 1000';
+    if (l > 1000) el.value = el.value.slice(0, 1000);
+  };
+
+  /* ── TAGS ── */
+  window.handleTag = function(e) {
+    const inp = document.getElementById('tagIn');
+    const val = inp.value.trim().replace(/^#/,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+    if ((e.key === 'Enter' || e.key === ',' || e.key === ' ') && val) {
+      e.preventDefault();
+      if (!currentTags.includes(val) && currentTags.length < 6) {
+        currentTags.push(val);
+        const pill = document.createElement('div');
+        pill.className = 'tpill'; pill.id = 'tp-' + val;
+        pill.innerHTML = `#${val} <button type="button" onclick="rmTag('${val}')">×</button>`;
+        document.getElementById('tagPills').appendChild(pill);
+        updateCatHint();
+      }
+      inp.value = '';
+    }
+  };
+
+  window.rmTag = function(tag) {
+    currentTags = currentTags.filter(t => t !== tag);
+    document.getElementById('tp-' + tag)?.remove();
+    updateCatHint();
+  };
+
+  window.onCatChange = function(val) {
+    const hint = document.getElementById('catHint');
+    const catEl = document.getElementById('wCat');
+    if (val) {
+      catEl.setAttribute('data-manual','1');
+      hint.textContent = '✅ Category: ' + val.charAt(0).toUpperCase() + val.slice(1);
+      hint.style.color = 'var(--rust)';
+    } else {
+      catEl.setAttribute('data-manual','0');
+      updateCatHint();
+    }
+  };
+
+  function updateCatHint() {
+    const title   = document.getElementById('wTitle')?.value || '';
+    const content = document.getElementById('wContent')?.value || '';
+    const det = detectCategory(currentTags, title, content);
+    const hint = document.getElementById('catHint');
+    // Only auto-set if user hasn't manually chosen a category
+    const catEl = document.getElementById('wCat');
+    const manualCat = catEl.getAttribute('data-manual') === '1';
+    if (!manualCat) {
+      if (det) {
+        hint.textContent = `✅ Detected: ${det.charAt(0).toUpperCase()+det.slice(1)}`;
+        hint.style.color = 'var(--rust)';
+        catEl.value = det;
+      } else {
+        hint.textContent = '💡 Category auto-detected from hashtags & content';
+        hint.style.color = 'var(--muted)';
+        catEl.value = '';
+      }
+    }
+  }
+
+  /* ── NAVIGATION ── */
+  window.navClick = function(el, mode) {
+    document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    currentMode = mode;
+    if (mode.startsWith('cat:')) {
+      const cat = mode.slice(4);
+      const em  = {technology:'💻',mindfulness:'🧘',creativity:'🎨',science:'🔬',travel:'✈️',books:'📚',life:'🌿'};
+      showSecHdr((em[cat]||'📁') + ' ' + cat.charAt(0).toUpperCase() + cat.slice(1));
+      renderCat(cat);
+    } else {
+      hideSecHdr();
+      const ti = {all:0, trending:1, latest:2};
+      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i === (ti[mode]||0)));
+      renderByMode();
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  window.switchTab = function(el, mode) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentMode = mode;
+    hideSecHdr();
+    renderByMode();
+  };
+
+  window.goTag = function(tag) {
+    currentMode = 'tag:' + tag;
+    showSecHdr('#' + tag);
+    renderTag(tag);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+
+  window.clearSection = function() {
+    currentMode = 'all';
+    hideSecHdr();
+    document.querySelectorAll('.ni').forEach((n,i) => n.classList.toggle('active', i===0));
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===0));
+    // Clear search input and people panel
+    const searchInput = document.querySelector('.hsearch input');
+    if (searchInput) searchInput.value = '';
+    const panel = document.getElementById('searchPeoplePanel');
+    if (panel) panel.style.display = 'none';
+    render(allPosts);
+  };
+
+  function showSecHdr(title) {
+    document.getElementById('tabsRow').style.display = 'none';
+    document.getElementById('secHdr').style.display  = 'flex';
+    document.getElementById('secTitle').textContent  = title;
+  }
+  function hideSecHdr() {
+    document.getElementById('tabsRow').style.display = 'flex';
+    document.getElementById('secHdr').style.display  = 'none';
+  }
+
+  /* ── SEARCH ── */
+  window.handleSearch = function(val) {
+    const trimmed = val.trim();
+    const panel   = document.getElementById('searchPeoplePanel');
+    const plist   = document.getElementById('searchPeopleList');
+
+    if (!trimmed) {
+      panel.style.display = 'none';
+      renderByMode();
+      renderPeopleList(allUsers.slice(0, 7));
+      return;
+    }
+
+    const low = trimmed.toLowerCase().replace(/^#+/, '').replace(/^@+/, '');
+
+    // ── Render user cards with Follow/Unfollow + profile click ──
+    async function showPeopleInFeed(users) {
+      if (!users.length) { panel.style.display = 'none'; return; }
+      panel.style.display = 'block';
+      plist.innerHTML = users.map(u => {
+        const init = (u.name || u.username || '?')[0].toUpperCase();
+        const isF  = myFollowingSet.has(u.uid);
+        const safeName = (u.name||u.username||'User').replace(/'/g,"\\'");
+        const livePosts = allPosts.filter(p => p.authorId === u.uid).length;
+        return `<div class="suc" id="suc-${u.uid}">
+          <div class="suc-av" onclick="viewUser('${u.uid}')">${init}</div>
+          <div class="suc-info" onclick="viewUser('${u.uid}')">
+            <div class="suc-name">${u.name || u.username || 'User'}</div>
+            <div class="suc-meta">@${u.username || 'user'} &nbsp;·&nbsp; ${u.followers||0} followers &nbsp;·&nbsp; ${livePosts} posts</div>
+          </div>
+          <button class="suc-follow${isF?' following':''}" id="sfb-${u.uid}"
+            onclick="searchFollowToggle('${u.uid}','${safeName}',this)">
+            ${isF ? 'Following' : 'Follow'}
+          </button>
+        </div>`;
+      }).join('');
+    }
+
+    // # prefix — hashtag search only
+    if (trimmed.startsWith('#')) {
+      panel.style.display = 'none';
+      render(allPosts.filter(p => p.tags && p.tags.some(t => t.toLowerCase().includes(low))));
+      renderPeopleList(allUsers.slice(0, 7));
+      return;
+    }
+
+    // @ prefix — user search only
+    if (trimmed.startsWith('@')) {
+      const matched = allUsers.filter(u =>
+        (u.username && u.username.toLowerCase().includes(low)) ||
+        (u.name     && u.name.toLowerCase().includes(low))
+      );
+      showPeopleInFeed(matched);
+      document.getElementById('feed').innerHTML = matched.length
+        ? `<div style="text-align:center;padding:1.2rem;color:var(--muted);font-size:.86rem">Found ${matched.length} user${matched.length>1?'s':''} above</div>`
+        : `<div style="text-align:center;padding:1.5rem;color:var(--muted);font-size:.88rem">No users found for "@${low}"</div>`;
+      renderPeopleList(matched.length ? matched.slice(0,5) : allUsers.slice(0,7));
+      return;
+    }
+
+    // General search — users on top, matching posts below
+    const matchedUsers = allUsers.filter(u =>
+      (u.username && u.username.toLowerCase().includes(low)) ||
+      (u.name     && u.name.toLowerCase().includes(low))
+    );
+    showPeopleInFeed(matchedUsers);
+
+    const matchedPosts = allPosts.filter(p =>
+      (p.title      && p.title.toLowerCase().includes(low))   ||
+      (p.content    && p.content.toLowerCase().includes(low)) ||
+      (p.tags       && p.tags.some(t => t.toLowerCase().includes(low))) ||
+      (p.authorName && p.authorName.toLowerCase().includes(low))
+    );
+    render(matchedPosts);
+    renderPeopleList(matchedUsers.length ? matchedUsers.slice(0,5) : allUsers.slice(0,7));
+  };
+
+  /* ── FOLLOW / UNFOLLOW FROM SEARCH RESULTS ── */
+  window.searchFollowToggle = async function(uid, name, btn) {
+    if (!CU) return;
+    btn.disabled = true;
+    const isF = btn.classList.contains('following');
+    // Optimistic UI
+    if (isF) { btn.classList.remove('following'); btn.textContent = 'Follow'; myFollowingSet.delete(uid); }
+    else      { btn.classList.add('following');    btn.textContent = 'Following'; myFollowingSet.add(uid); }
+    // Sync sidebar button if visible
+    const sideBtn = document.getElementById('fb-' + uid);
+    if (sideBtn) { sideBtn.classList.toggle('following', !isF); sideBtn.textContent = isF ? 'Follow' : 'Following'; }
+    try {
+      const meRef   = doc(db,'users', CU.uid);
+      const themRef = doc(db,'users', uid);
+      if (isF) {
+        await updateDoc(meRef, { followingList: arrayRemove(uid), following: increment(-1) });
+        try { await updateDoc(themRef, { followersList: arrayRemove(CU.uid), followers: increment(-1) }); } catch(e) {}
+        toast('Unfollowed ' + name);
+      } else {
+        await updateDoc(meRef, { followingList: arrayUnion(uid), following: increment(1) });
+        try { await updateDoc(themRef, { followersList: arrayUnion(CU.uid), followers: increment(1) }); } catch(e) {}
+        toast('Now following ' + name + '!');
+      }
+      // Refresh sidebar card counts using actual array length
+      const me = await getDoc(doc(db,'users', CU.uid));
+      if (me.exists()) {
+        CUD = me.data();
+        myFollowingSet = new Set(CUD.followingList || []);
+        document.getElementById('stFollowing').textContent = myFollowingSet.size;
+        document.getElementById('stFollowers').textContent = (CUD.followersList||[]).length;
+      }
+    } catch(e) {
+      // Revert
+      if (isF) { btn.classList.add('following'); btn.textContent = 'Following'; myFollowingSet.add(uid); }
+      else      { btn.classList.remove('following'); btn.textContent = 'Follow'; myFollowingSet.delete(uid); }
+      if (sideBtn) { sideBtn.classList.toggle('following', isF); sideBtn.textContent = isF ? 'Following' : 'Follow'; }
+      toast('Error: ' + e.message);
+    }
+    btn.disabled = false;
+  };
+
+  /* ── TRENDING TAGS ── */
+  function buildTrendingTags() {
+    const map = {};
+    allPosts.forEach(p => (p.tags||[]).forEach(t => { map[t] = (map[t]||0)+1; }));
+    const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0,8);
+    const box = document.getElementById('trendTags');
+    if (!sorted.length) { box.innerHTML = '<div style="color:var(--muted);font-size:.82rem">Post something to see trends!</div>'; return; }
+    box.innerHTML = sorted.map(([tag,cnt]) =>
+      `<div class="tr-tag" onclick="goTag('${tag}')"><span class="tn">#${tag}</span><span class="tc">${cnt}</span></div>`
+    ).join('');
+  }
+
+  /* ── PEOPLE TO FOLLOW (registered users, no self) ── */
+  async function loadPeople() {
+    try {
+      const snap = await getDocs(collection(db, 'users'));
+      allUsers = [];
+      snap.forEach(d => {
+        const u = d.data();
+        if (u.uid && u.uid !== CU.uid) allUsers.push(u);
+      });
+      await renderPeopleList(allUsers.slice(0, 7));
+    } catch(e) {
+      document.getElementById('peopleList').innerHTML =
+        `<div style="color:var(--muted);font-size:.82rem">Could not load users: ${e.message}</div>`;
+    }
+  }
+
+  async function renderPeopleList(users) {
+    const list = document.getElementById('peopleList');
+    const titleEl = document.getElementById('peopleWidgetTitle');
+    if (!users.length) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:.82rem">No users found.</div>';
+      if (titleEl) titleEl.textContent = '👥 Search Results';
+      return;
+    }
+    if (titleEl) titleEl.textContent = users.length < (allUsers.length) ? '👥 Matching Users' : '👥 People to Follow';
+    // Use local myFollowingSet — updated instantly on follow/unfollow (no Firestore re-fetch)
+    list.innerHTML = users.map(u => {
+      const init = (u.name || u.username || '?')[0].toUpperCase();
+      const isF  = myFollowingSet.has(u.uid);
+      const livePosts = allPosts.filter(p => p.authorId === u.uid).length;
+      return `<div class="su" id="su-${u.uid}">
+        <div class="suav" style="cursor:pointer" onclick="viewUser('${u.uid}')">${init}</div>
+        <div class="sui">
+          <div class="sun">${u.name || u.username || 'User'}</div>
+          <div class="suh">@${u.username || 'user'} · ${livePosts} posts</div>
+        </div>
+        <button class="fbtn${isF?' following':''}" id="fb-${u.uid}"
+          onclick="toggleFollow('${u.uid}','${(u.name||u.username||'User').replace(/'/g,"\'")}',this)">
+          ${isF ? 'Following' : 'Follow'}
+        </button>
+      </div>`;
+    }).join('');
+  }
+
+  /* ── FOLLOW / UNFOLLOW ── */
+  // Local cache of who I follow — updated instantly on action to avoid race conditions
+  let myFollowingSet = new Set();
+
+  window.toggleFollow = async function(uid, name, btn) {
+    if (!CU) return;
+    const isF = btn.classList.contains('following');
+    btn.disabled = true;
+    // Optimistic UI — update immediately in both UI and local set
+    if (isF) {
+      btn.classList.remove('following'); btn.textContent = 'Follow';
+      myFollowingSet.delete(uid);
+    } else {
+      btn.classList.add('following'); btn.textContent = 'Following';
+      myFollowingSet.add(uid);
+    }
+    // Sync all other buttons for the same uid (e.g. in search results)
+    document.querySelectorAll(`[id^="fb-${uid}"], [id^="sfb-${uid}"]`).forEach(b => {
+      if (b !== btn) {
+        b.classList.toggle('following', !isF);
+        b.textContent = isF ? 'Follow' : 'Following';
+      }
+    });
+    try {
+      const meRef   = doc(db,'users', CU.uid);
+      const themRef = doc(db,'users', uid);
+      if (isF) {
+        await updateDoc(meRef, { followingList: arrayRemove(uid), following: increment(-1) });
+        try { await updateDoc(themRef, { followersList: arrayRemove(CU.uid), followers: increment(-1) }); } catch(e) {}
+        toast('Unfollowed ' + name);
+      } else {
+        await updateDoc(meRef, { followingList: arrayUnion(uid), following: increment(1) });
+        try { await updateDoc(themRef, { followersList: arrayUnion(CU.uid), followers: increment(1) }); } catch(e) {}
+        toast('Now following ' + name + '!');
+      }
+      // Refresh sidebar card counts using actual array length from server
+      const me = await getDoc(meRef);
+      if (me.exists()) {
+        CUD = me.data();
+        myFollowingSet = new Set(CUD.followingList || []);
+        document.getElementById('stFollowing').textContent = myFollowingSet.size;
+        document.getElementById('stFollowers').textContent = (CUD.followersList||[]).length;
+      }
+    } catch(e) {
+      // Revert on error
+      if (isF) { btn.classList.add('following'); btn.textContent = 'Following'; myFollowingSet.add(uid); }
+      else      { btn.classList.remove('following'); btn.textContent = 'Follow'; myFollowingSet.delete(uid); }
+      toast('Error: ' + e.message);
+    }
+    btn.disabled = false;
+  };
+
+  /* ── FOLLOWERS / FOLLOWING LIST MODAL ── */
+  window.openFollowList = async function(type) {
+    if (!CU) return;
+    const overlay = document.getElementById('listModal');
+    const title   = document.getElementById('listTitle');
+    const content = document.getElementById('listContent');
+    overlay.classList.add('open');
+
+    if (type === 'posts') {
+      title.textContent = '📝 My Posts';
+      location.href = 'myposts.html'; return;
+    }
+
+    title.textContent = type === 'followers' ? '👥 Followers' : '➡️ Following';
+    content.innerHTML = '<div class="ld"><div class="spin"></div></div>';
+
+    try {
+      const me = await getDoc(doc(db,'users', CU.uid));
+      if (!me.exists()) { content.innerHTML = '<div style="padding:1rem;color:var(--muted)">No data.</div>'; return; }
+      const data = me.data();
+      const ids  = type === 'followers' ? (data.followersList||[]) : (data.followingList||[]);
+
+      if (!ids.length) {
+        content.innerHTML = `<div style="padding:1.2rem;text-align:center;color:var(--muted);font-size:.9rem">
+          ${type==='followers' ? 'No followers yet.' : 'Not following anyone yet.'}</div>`;
+        return;
+      }
+
+      const userDocs = await Promise.all(ids.map(id => getDoc(doc(db,'users',id)).catch(()=>null)));
+      const users = userDocs.filter(d => d && d.exists()).map(d => d.data());
+
+      content.innerHTML = users.map(u => {
+        const init = (u.name||u.username||'?')[0].toUpperCase();
+        return `<div class="lm-item" onclick="closeListModal();viewUser('${u.uid}')">
+          <div class="lm-av">${init}</div>
+          <div class="lm-info">
+            <div class="lm-name">${u.name||u.username||'User'}</div>
+            <div class="lm-handle">@${u.username||'user'}</div>
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      content.innerHTML = `<div style="padding:1rem;color:red;font-size:.85rem">Error: ${e.message}</div>`;
+    }
+  };
+
+  window.closeListModal = function() {
+    document.getElementById('listModal').classList.remove('open');
+  };
+
+  document.getElementById('delModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDelModal();
+  });
+
+  document.getElementById('listModal').addEventListener('click', function(e) {
+    if (e.target === this) closeListModal();
+  });
+
+  /* ── DROPDOWN ── */
+  window.toggleDD = () => document.getElementById('dd').classList.toggle('open');
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.av-wrap')) document.getElementById('dd').classList.remove('open');
+  });
+
+  /* ── LOGOUT ── */
+  window.logout = async function() {
+    if (unsubPosts) unsubPosts();
+    await signOut(auth);
+    location.href = 'index.html';
+  };
+
+  /* ── IMAGE LIGHTBOX ── */
+  window.openLb = function(src) {
+    document.getElementById('imgLbImg').src = src;
+    document.getElementById('imgLb').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeLb = function() {
+    document.getElementById('imgLb').classList.remove('open');
+    document.body.style.overflow = '';
+  };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLb(); } });
+
+  /* ── TOAST ── */
+  window.toast = function(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  };
+
+  function timeAgo(d) {
+    const s = Math.floor((new Date() - d) / 1000);
+    if (s < 60)    return 'just now';
+    if (s < 3600)  return Math.floor(s/60)  + 'm ago';
+    if (s < 86400) return Math.floor(s/3600) + 'h ago';
+    return Math.floor(s/86400) + 'd ago';
+  }
+</script>
+</body>
+</html>

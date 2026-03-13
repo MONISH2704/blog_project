@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thoughtflow — My Posts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#1a1209;--cream:#faf6ef;--warm:#f0e8d8;--gold:#c9933a;--gold-light:#e8b96a;--rust:#b85c38;--muted:#8a7968;--border:#d4c9b8;--hw:64px}
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+    header{position:fixed;top:0;left:0;right:0;height:var(--hw);background:rgba(250,246,239,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.4rem;gap:1rem;z-index:100}
+    .brand{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+    .brand-icon{width:34px;height:34px;background:var(--ink);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--gold-light);font-size:1rem}
+    .brand-name{font-family:'Playfair Display',serif;font-size:1.22rem;font-weight:700;color:var(--ink)}
+    .hright{display:flex;align-items:center;gap:.7rem;margin-left:auto}
+    .back-btn{display:flex;align-items:center;gap:.4rem;padding:.42rem .9rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;color:var(--ink);transition:all .2s;text-decoration:none}
+    .back-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .btn-write{display:flex;align-items:center;gap:.4rem;padding:.45rem 1rem;background:var(--ink);color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:background .2s;text-decoration:none}
+    .btn-write:hover{background:var(--gold)}
+    main{padding-top:calc(var(--hw) + 2rem);max-width:720px;margin:0 auto;padding-left:1.5rem;padding-right:1.5rem;padding-bottom:2rem}
+    .page-hdr{margin-bottom:1.8rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .page-hdr h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700}
+    .page-hdr p{color:var(--muted);font-size:.88rem;margin-top:.2rem}
+    .stats-bar{display:flex;gap:1.5rem;background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1.3rem;margin-bottom:1.4rem;animation:fadeUp .4s ease both}
+    .stat{text-align:center}
+    .stat strong{display:block;font-size:1.3rem;font-family:'Playfair Display',serif;font-weight:700}
+    .stat span{font-size:.76rem;color:var(--muted);font-weight:500}
+    .pc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.3rem;margin-bottom:.85rem;transition:all .3s;animation:fadeUp .4s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .pc:hover{border-color:var(--gold);box-shadow:0 6px 24px rgba(0,0,0,.08);transform:translateY(-2px)}
+    .ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.8rem}
+    .ptitle{font-family:'Playfair Display',serif;font-size:1.08rem;font-weight:700;margin-bottom:.3rem;line-height:1.35}
+    .ptime{font-size:.76rem;color:var(--muted)}
+    .pbody p{font-size:.88rem;line-height:1.65;color:#3d3427}
+    .ptags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.65rem}
+    .tag{padding:.2rem .6rem;background:var(--warm);border-radius:50px;font-size:.74rem;color:var(--rust);font-weight:600;border:none}
+    .pcat{display:inline-flex;align-items:center;padding:.16rem .55rem;background:#fff3e8;border:1px solid #f0d5b0;border-radius:50px;font-size:.7rem;color:var(--gold);font-weight:600;margin-top:.5rem}
+    .pf{display:flex;align-items:center;gap:.5rem;margin-top:.8rem;padding-top:.75rem;border-top:1px solid var(--border)}
+    .stat-lbl{font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.3rem;font-weight:500}
+    .pc-actions{display:flex;gap:.5rem;flex-shrink:0}
+    .del-btn{padding:.32rem .7rem;border:1.5px solid #fca5a5;border-radius:50px;background:none;font-size:.76rem;cursor:pointer;color:#e74c3c;font-family:'DM Sans',sans-serif;font-weight:600;transition:all .2s}
+    .del-btn:hover{background:#e74c3c;color:#fff}
+    .post-img{width:100%;border-radius:10px;margin-top:.7rem;height:auto;display:block;cursor:zoom-in;transition:opacity .15s}
+    .post-img:hover{opacity:.92}
+    .img-lb{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:900;display:flex;align-items:center;justify-content:center;padding:1.2rem;opacity:0;pointer-events:none;transition:opacity .22s;cursor:zoom-out}
+    .img-lb.open{opacity:1;pointer-events:all}
+    .img-lb img{max-width:100%;max-height:92vh;border-radius:10px;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+    .img-lb-close{position:absolute;top:1rem;right:1.2rem;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.4rem;width:38px;height:38px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .img-lb-close:hover{background:rgba(255,255,255,.3)}
+    .empty{text-align:center;padding:4rem 1rem;animation:fadeUp .4s ease both}
+    .empty .em{font-size:2.8rem;margin-bottom:1rem}
+    .empty h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+    .empty p{color:var(--muted);font-size:.9rem;margin-bottom:1.3rem}
+    .empty a{display:inline-block;padding:.56rem 1.3rem;background:var(--ink);color:#fff;border-radius:50px;text-decoration:none;font-size:.88rem;font-weight:600}
+    .empty a:hover{background:var(--gold)}
+    .toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--ink);color:#fff;padding:.7rem 1rem;border-radius:10px;font-size:.85rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .28s;box-shadow:0 4px 18px rgba(0,0,0,.14)}
+    .toast.show{transform:translateY(0);opacity:1}
+    .spin{display:inline-block;width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .ld{text-align:center;padding:2rem;color:var(--muted)}
+    .filter-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem;animation:fadeUp .35s ease both}
+    .fchip{padding:.35rem .9rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s}
+    .fchip:hover{border-color:var(--gold);color:var(--ink)}
+    .fchip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+    .del-overlay{position:fixed;inset:0;background:rgba(26,18,9,.65);backdrop-filter:blur(4px);z-index:700;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .22s}
+    .del-overlay.open{opacity:1;pointer-events:all}
+    .del-box{background:#fff;border-radius:18px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.22);transform:translateY(20px);transition:transform .26s;padding:1.8rem;text-align:center}
+    .del-overlay.open .del-box{transform:translateY(0)}
+    .del-box .del-ic{font-size:2.4rem;margin-bottom:.8rem}
+    .del-box h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.45rem}
+    .del-box p{color:var(--muted);font-size:.87rem;margin-bottom:1.4rem;line-height:1.5}
+    .del-actions{display:flex;gap:.7rem;justify-content:center}
+    .del-cancel{padding:.56rem 1.4rem;border:1.5px solid var(--border);border-radius:50px;background:none;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;color:var(--muted);transition:background .15s}
+    .del-cancel:hover{background:var(--warm)}
+    .del-confirm{padding:.56rem 1.4rem;background:#e74c3c;color:#fff;border:none;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:background .2s}
+    .del-confirm:hover{background:#c0392b}
+  </style>
+</head>
+<body>
+<header>
+  <a href="main.html" class="brand"><div class="brand-icon">✦</div><span class="brand-name">Thoughtflow</span></a>
+  <div class="hright">
+    <a href="main.html" class="back-btn">← Back</a>
+    <a href="main.html" class="btn-write" onclick="sessionStorage.setItem('openWrite','1');return true;">✏ New Post</a>
+  </div>
+</header>
+<main>
+  <div class="page-hdr">
+    <div>
+      <h1>📝 My Posts</h1>
+      <p>All your published thoughts</p>
+    </div>
+  </div>
+  <div class="stats-bar" id="statsBar" style="display:none">
+    <div class="stat"><strong id="stTotal">0</strong><span>Total Posts</span></div>
+    <div class="stat"><strong id="stLikes">0</strong><span>Total Likes</span></div>
+    <div class="stat"><strong id="stComments">0</strong><span>Total Comments</span></div>
+  </div>
+  <div class="filter-row" id="filterRow" style="display:none">
+    <button class="fchip active" onclick="filterPosts('all',this)">All</button>
+    <button class="fchip" onclick="filterPosts('technology',this)">💻 Technology</button>
+    <button class="fchip" onclick="filterPosts('mindfulness',this)">🧘 Mindfulness</button>
+    <button class="fchip" onclick="filterPosts('creativity',this)">🎨 Creativity</button>
+    <button class="fchip" onclick="filterPosts('science',this)">🔬 Science</button>
+    <button class="fchip" onclick="filterPosts('travel',this)">✈️ Travel</button>
+    <button class="fchip" onclick="filterPosts('books',this)">📚 Books</button>
+    <button class="fchip" onclick="filterPosts('life',this)">🌿 Life</button>
+  </div>
+  <div id="feed"><div class="ld"><div class="spin"></div></div></div>
+</main>
+<div class="del-overlay" id="delModal" onclick="if(event.target===this)closeDelModal()">
+  <div class="del-box">
+    <div class="del-ic">🗑️</div>
+    <h3>Delete Post?</h3>
+    <p>This action cannot be undone. Your post will be permanently removed.</p>
+    <div class="del-actions">
+      <button class="del-cancel" onclick="closeDelModal()">Cancel</button>
+      <button class="del-confirm" id="delConfirmBtn" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<!-- IMAGE LIGHTBOX -->
+<div class="img-lb" id="imgLb" onclick="if(event.target===this||event.target.closest('.img-lb-close'))closeLb()">
+  <button class="img-lb-close" onclick="closeLb()">✕</button>
+  <img id="imgLbImg" src="" alt="Full image">
+</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, orderBy, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const cfg={apiKey:"AIzaSyCcgJ95GBqTe0mDRu09b5vvigmBlq7l8us",authDomain:"loginauthproject-34e2a.firebaseapp.com",projectId:"loginauthproject-34e2a",storageBucket:"loginauthproject-34e2a.firebasestorage.app",messagingSenderId:"538191570556",appId:"1:538191570556:web:5a3e3f2f4cfb3776accbf9"};
+  const app=initializeApp(cfg), auth=getAuth(app), db=getFirestore(app);
+  let allPosts=[], currentFilter='all';
+
+  onAuthStateChanged(auth, async u=>{
+    if(!u){window.location.href='index.html';return;}
+    const feed=document.getElementById('feed');
+    try{
+      let snap;
+      try{
+        // Try with orderBy first (needs composite index in Firestore)
+        snap=await getDocs(query(collection(db,'posts'),where('authorId','==',u.uid),orderBy('createdAt','desc')));
+      }catch(indexErr){
+        // Fallback: fetch without orderBy, sort client-side
+        snap=await getDocs(query(collection(db,'posts'),where('authorId','==',u.uid)));
+      }
+      allPosts=snap.docs.map(d=>({id:d.id,...d.data()}));
+      // Sort by createdAt descending client-side (handles both cases)
+      allPosts.sort((a,b)=>{
+        const ta=a.createdAt?.toDate?a.createdAt.toDate():new Date(a.createdAt||0);
+        const tb=b.createdAt?.toDate?b.createdAt.toDate():new Date(b.createdAt||0);
+        return tb-ta;
+      });
+      const totalLikes=allPosts.reduce((s,p)=>s+(p.likes||0),0);
+      const totalComments=allPosts.reduce((s,p)=>s+(p.comments||0),0);
+      document.getElementById('stTotal').textContent=allPosts.length;
+      document.getElementById('stLikes').textContent=totalLikes;
+      document.getElementById('stComments').textContent=totalComments;
+      if(allPosts.length){
+        document.getElementById('statsBar').style.display='flex';
+        document.getElementById('filterRow').style.display='flex';
+      }
+      render(allPosts);
+    }catch(e){
+      feed.innerHTML=`<div class="empty"><div class="em">⚠️</div><h3>Could not load posts</h3><p>${e.message}</p><a href="main.html">Go Back</a></div>`;
+    }
+  });
+
+  function render(posts){
+    const feed=document.getElementById('feed');
+    if(!posts.length){
+      feed.innerHTML=`<div class="empty"><div class="em">✍️</div><h3>No posts here yet</h3><p>Write your first thought and share it with the world!</p><a href="main.html">Go Write</a></div>`;
+      return;
+    }
+    feed.innerHTML=posts.map((p,i)=>{
+      const t=p.createdAt?timeAgo(p.createdAt.toDate?p.createdAt.toDate():new Date(p.createdAt)):'';
+      const tags=(p.tags||[]).map(tg=>`<span class="tag">#${tg}</span>`).join('');
+      const cat=p.category?`<span class="pcat">📁 ${p.category}</span>`:'';
+      return `<div class="pc" id="pc-${p.id}" style="animation-delay:${i*.04}s">
+        <div class="ph">
+          <div><div class="ptitle">${p.title||'(no title)'}</div><div class="ptime">${t}</div></div>
+          <div class="pc-actions"><button class="del-btn" onclick="delPost('${p.id}')">🗑 Delete</button></div>
+        </div>
+        <div class="pbody">
+          <p>${(p.content||'').slice(0,260)}${(p.content||'').length>260?'…':''}</p>
+          ${p.imageBase64 ? `<img class="post-img" src="${p.imageBase64}" alt="Post image" loading="lazy" onclick="openLb(this.src)">` : ''}
+          <div class="ptags">${tags}</div>
+          ${cat}
+        </div>
+        <div class="pf">
+          <span class="stat-lbl">❤️ ${p.likes||0} likes</span>
+          <span class="stat-lbl">💬 ${p.comments||0} comments</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  window.filterPosts=function(cat,el){
+    document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    currentFilter=cat;
+    if(cat==='all') render(allPosts);
+    else render(allPosts.filter(p=>p.category===cat));
+  };
+
+  let pendingDeleteId = null;
+  window.delPost = function(id) {
+    pendingDeleteId = id;
+    document.getElementById('delModal').classList.add('open');
+  };
+  window.closeDelModal = function() {
+    document.getElementById('delModal').classList.remove('open');
+    pendingDeleteId = null;
+  };
+  window.confirmDelete = async function() {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    document.getElementById('delConfirmBtn').disabled = true;
+    try {
+      await deleteDoc(doc(db,'posts',id));
+      allPosts = allPosts.filter(p => p.id !== id);
+      document.getElementById('stTotal').textContent = allPosts.length;
+      document.getElementById('stLikes').textContent = allPosts.reduce((s,p)=>s+(p.likes||0),0);
+      document.getElementById('stComments').textContent = allPosts.reduce((s,p)=>s+(p.comments||0),0);
+      filterPosts(currentFilter, document.querySelector('.fchip.active'));
+      toast('Post deleted');
+    } catch(e) { toast('Error: ' + e.message); }
+    document.getElementById('delConfirmBtn').disabled = false;
+    closeDelModal();
+  };
+
+  window.toast=function(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);};
+  window.openLb=function(src){document.getElementById('imgLbImg').src=src;document.getElementById('imgLb').classList.add('open');document.body.style.overflow='hidden';};
+  window.closeLb=function(){document.getElementById('imgLb').classList.remove('open');document.body.style.overflow='';};
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+  function timeAgo(d){const s=Math.floor((new Date()-d)/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
+</script>
+</body>
+</html>
